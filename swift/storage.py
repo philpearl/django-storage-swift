@@ -37,6 +37,7 @@ class SwiftStorage(Storage):
     use_temp_urls = setting('SWIFT_USE_TEMP_URLS', False)
     temp_url_key = setting('SWIFT_TEMP_URL_KEY')
     temp_url_duration = setting('SWIFT_TEMP_URL_DURATION', 30*60)
+    create_container_headers = setting('SWIFT_CONTAINER_HEADERS')
 
     def __init__(self):
         self.last_headers_name = None
@@ -61,7 +62,8 @@ class SwiftStorage(Storage):
             if self.auto_create_container:
                 swiftclient.put_container(self.storage_url, self.token,
                                           self.container_name,
-                                          http_conn=self.http_conn)
+                                          http_conn=self.http_conn,
+                                          headers=self.create_container_headers)
             else:
                 raise ImproperlyConfigured(
                     "Container %s does not exist." % self.container_name)
